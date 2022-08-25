@@ -18,7 +18,7 @@ namespace Zork
                 switch (command)
                 {
                     case Commands.QUIT:
-                        outputString = "Thank you for playing!\nPress any key to continue . . .";
+                        outputString = "Thank you for playing!";
                         break;
 
                     case Commands.NORTH:
