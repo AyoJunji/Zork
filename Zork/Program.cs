@@ -4,7 +4,14 @@ namespace Zork
 {
     internal class Program
     {
-       
+        private static string CurrentRoom
+        {
+            get
+            {
+                return Rooms[0, currentRoom];
+            }
+        }
+
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to Zork!");
@@ -12,8 +19,8 @@ namespace Zork
             Commands command = Commands.UNKNOWN;
             while (command != Commands.QUIT)
             {
-                
-                Console.Write("> ");
+
+                Console.Write($"{CurrentRoom}\n> ");
                 command = ToCommand(Console.ReadLine().Trim());
 
                 string outputString;
@@ -29,9 +36,16 @@ namespace Zork
 
                     case Commands.NORTH:
                     case Commands.SOUTH:
-                    case Commands.WEST:
                     case Commands.EAST:
-                        outputString = $"You moved {command}.";
+                    case Commands.WEST:
+                        if (Move(command))
+                        {
+                            outputString = $"You moved {command}.";
+                        }
+                        else
+                        {
+                            outputString = "The way is shut!";
+                        }
                         break;
 
                     default:

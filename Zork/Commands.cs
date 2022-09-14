@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Zork
+﻿namespace Zork
 {
     enum Commands
     {
