@@ -8,11 +8,11 @@ namespace Zork
         {
             get
             {
-                return Rooms[0, currentRoom];
+                return Rooms[location.Row, location.Column];
             }
         }
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Console.WriteLine("Welcome to Zork!");
 
@@ -31,7 +31,7 @@ namespace Zork
                         break;
 
                     case Commands.LOOK:
-                        outputString = "This is an open field west of a white house, with a boarded front door.\nA rubber mat saying 'Welcome to Zork!' lies by the door.";
+                        outputString = "A rubber mat saying 'Welcome to Zork!' lies by the door.";
                         break;
 
                     case Commands.NORTH:
@@ -59,7 +59,9 @@ namespace Zork
 
         private static string[,] Rooms =
         {
-            {"Forest", "West of House", "Behind House", "Clearing", "Canyon View"}
+            {"Rocky Trail", "South of House", "Canyon View" },
+            {"Forest", "West of House", "Behind House"},
+            {"Dense Woods", "North of House", "Clearing" }
         };
 
         private static bool Move(Commands command)
@@ -68,25 +70,33 @@ namespace Zork
 
             switch (command)
             {
-                case Commands.NORTH:
-                case Commands.SOUTH:
-                    break;
-
-                case Commands.EAST when currentRoom < Rooms.Length - 1:
-                    currentRoom++;
+                case Commands.NORTH when location.Row < Rooms.GetLength(0) - 1:
+                    location.Row++;
                     didMove = true;
                     break;
 
-                case Commands.WEST when currentRoom > 0:
-                    currentRoom--;
+                case Commands.SOUTH when location.Row > 0:
+                    location.Row--;
+                    didMove = true;
+                    break;
+
+                case Commands.EAST when location.Column < Rooms.GetLength(1) - 1:
+                    location.Column++;
+                    didMove = true;
+                    break;
+
+                case Commands.WEST when location.Column > 0:
+                    location.Column--;
                     didMove = true;
                     break;
             }
 
             return didMove;
         }
-        
-        private static int currentRoom = 1;
+
         private static Commands ToCommand(string commandString) => (Enum.TryParse<Commands>(commandString, true, out Commands result) ? result : Commands.UNKNOWN);
+
+        private static (int Row, int Column) location = (1, 1);
+
     }
 }
