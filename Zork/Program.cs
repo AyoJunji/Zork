@@ -1,10 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Zork
 {
     internal class Program
     {
+        private static readonly Dictionary<string, Room> RoomMap;
+
+        static Program()
+        {
+            RoomMap = new Dictionary<string, Room>();
+            foreach (Room room in Rooms)
+            {
+                RoomMap[room.Name] = room;
+            }
+        }
+
         public static Room CurrentRoom
         {
             get
@@ -13,9 +25,23 @@ namespace Zork
             }
         }
 
-        static void Main()
+        private enum Fields
         {
-            InitializeRoomDescription();
+            Name = 0,
+            Description
+        }
+
+        private enum CommandLineArguments
+        {
+            roomsFileName = 0
+        }
+
+        static void Main(string[] args)
+        {
+            const string defaultRoomsFileName = "Rooms.txt";
+            string roomsFileName = (args.Length > 0 ? args[(int)CommandLineArguments.roomsFileName] : defaultRoomsFileName);
+            InitializeRoomDescription(roomsFileName);
+
             Console.WriteLine("Welcome to Zork!");
 
             Room previousRoom = null;
@@ -103,26 +129,26 @@ namespace Zork
             return didMove;
         }
 
-        private static void InitializeRoomDescription()
+        private static void InitializeRoomDescription(string roomsFileName)
         {
+            const string fieldDelimiter = "##";
+            const int expectedFieldCount = 2;
+
             var roomMap = new Dictionary<string, Room>();
-            foreach (Room room in Rooms)
+            string[] lines = File.ReadAllLines(roomsFileName);
+            foreach (string line in lines)
             {
-                roomMap.Add(room.Name, room);
+                string[] fields = line.Split(fieldDelimiter);
+
+                if (fieldDelimiter.Length != expectedFieldCount)
+                {
+                    throw new InvalidDataException("Invalid record.");
+                    string name = fields[(int)Fields.Name];
+                    string description = fields[(int)Fields.Description];
+                    RoomMap[name].Description = description;
+                }
             }
-
-            roomMap["Rocky Trail"].Description = "You are on a rock-strewn trail.";
-            roomMap["South of House"].Description = "You are facing the south side of a white house.";
-            roomMap["Canyon View"].Description = "You are at the top of the Great Canyon on its south wall";
-
-            roomMap["Forest"].Description = "This is a forest, with trees in all directions.";
-            roomMap["West of House"].Description = "This is an open field west of a white house, with a boarded front door.";
-            roomMap["Behind House"].Description = "You are behind the white house. In one corner of the house there is a small window which is slightly ajar.";
-
-            roomMap["Dense Woods"].Description = "This is a dimly lit forest, with large trees all around. To the east, there appears to be sunlight";
-            roomMap["North of House"].Description = "You are facing the north side of a white house. There is no door here, and all the windows are barred.";
-            roomMap["Clearing"].Description = "You are in a clearing, with a forest surrounding you on the west and south"; 
-        }
+       }
 
         private static Commands ToCommand(string commandString) => (Enum.TryParse<Commands>(commandString, true, out Commands result) ? result : Commands.UNKNOWN);
 
