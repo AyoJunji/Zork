@@ -1,22 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace Zork
 {
     internal class Program
     {
-        private static readonly Dictionary<string, Room> RoomMap;
-
-        static Program()
-        {
-            RoomMap = new Dictionary<string, Room>();
-            foreach (Room room in Rooms)
-            {
-                RoomMap[room.Name] = room;
-            }
-        }
-
+        
         public static Room CurrentRoom
         {
             get
@@ -33,14 +24,14 @@ namespace Zork
 
         private enum CommandLineArguments
         {
-            roomsFileName = 0
+            RoomsFilename = 0
         }
 
         static void Main(string[] args)
         {
-            const string defaultRoomsFileName = "Rooms.txt";
-            string roomsFileName = (args.Length > 0 ? args[(int)CommandLineArguments.roomsFileName] : defaultRoomsFileName);
-            InitializeRoomDescription(roomsFileName);
+            const string defaultRoomsFilename = "Rooms.json";
+            string roomsFilename = (args.Length > 0 ? args[(int)CommandLineArguments.RoomsFilename] : defaultRoomsFilename);
+            InitializeRooms(roomsFilename);
 
             Console.WriteLine("Welcome to Zork!");
 
@@ -92,6 +83,7 @@ namespace Zork
             }
         }
 
+        private static void InitializeRooms(string roomsFilename) => Rooms = JsonConvert.DeserializeObject<Room[,]>(File.ReadAllText(roomsFilename));
         private static Room[,] Rooms =
         {
             { new Room("Rocky Trail"), new Room("South of House"), new Room("Canyon View") },
@@ -128,27 +120,6 @@ namespace Zork
 
             return didMove;
         }
-
-        private static void InitializeRoomDescription(string roomsFileName)
-        {
-            const string fieldDelimiter = "##";
-            const int expectedFieldCount = 2;
-
-            var roomMap = new Dictionary<string, Room>();
-            string[] lines = File.ReadAllLines(roomsFileName);
-            foreach (string line in lines)
-            {
-                string[] fields = line.Split(fieldDelimiter);
-
-                if (fieldDelimiter.Length != expectedFieldCount)
-                {
-                    throw new InvalidDataException("Invalid record.");
-                    string name = fields[(int)Fields.Name];
-                    string description = fields[(int)Fields.Description];
-                    RoomMap[name].Description = description;
-                }
-            }
-       }
 
         private static Commands ToCommand(string commandString) => (Enum.TryParse<Commands>(commandString, true, out Commands result) ? result : Commands.UNKNOWN);
 
