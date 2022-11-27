@@ -3,16 +3,16 @@
     public class Item
     {
         public string Name { get; }
+        public string LookDescription { get; }
+        public string InventoryDescription { get; }
 
-        public string Description { get; }
-
-        public int Value { get; }
-
-        public Item(string name, string description, int value)
+        public Item(string name, string lookDescription, string inventoryDescription)
         {
             Name = name;
-            Description = description;
-            Value = value; 
+            LookDescription = lookDescription;
+            InventoryDescription = inventoryDescription;
         }
+
+        public override string ToString() => Name;
     }
 }

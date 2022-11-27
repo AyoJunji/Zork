@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Newtonsoft.Json;
 using Zork.Common;
 
@@ -9,25 +8,23 @@ namespace Zork.Cli
     {
         static void Main(string[] args)
         {
-            const string defaultRoomsFilename = @"Content\Game.json";
-            string gameFilename = (args.Length > 0 ? args[(int)CommandLineArguments.GameFilename] : defaultRoomsFilename);
+            const string defaultGameFilename = @"Content\Game.json";
+            string gameFilename = (args.Length > 0 ? args[(int)CommandLineArguments.GameFilename] : defaultGameFilename);
             Game game = JsonConvert.DeserializeObject<Game>(File.ReadAllText(gameFilename));
 
             var output = new ConsoleOutputService();
             var input = new ConsoleInputService();
+            game.Run(input, output);
 
-            input.InputReceived += Input_InputReceived;
+            while (game.IsRunning)
+            {
+                game.Output.Write("> ");
+                input.ProcessInput();
+            }
 
-
-            Console.WriteLine("Welcome to Zork!");
-            game.Run(output, input);
-            Console.WriteLine("Finished.");
+            output.WriteLine("Thank you for playing!");
         }
 
-        public static void Input_InputReceived(object sender, string inputString)
-        {
-            throw new NotImplementedException();
-        }
         private enum CommandLineArguments
         {
             GameFilename = 0
