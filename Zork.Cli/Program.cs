@@ -15,7 +15,7 @@ namespace Zork.Cli
             var output = new ConsoleOutputService();
             var input = new ConsoleInputService();
             game.Run(input, output);
-
+            
             while (game.IsRunning)
             {
                 game.Output.Write("> ");

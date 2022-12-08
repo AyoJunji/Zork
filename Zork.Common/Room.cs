@@ -8,25 +8,39 @@ namespace Zork.Common
     public class Room
     {
         public string Name { get; }
+
         public string Description { get; set; }
 
         [JsonIgnore]
         public IReadOnlyDictionary<Directions, Room> Neighbors => _neighbors;
+
         [JsonProperty]
         private Dictionary<Directions, string> NeighborNames { get; set; }
+
         [JsonIgnore]
         public IEnumerable<Item> Inventory => _inventory;
+
+        [JsonIgnore]
+        public IEnumerable<Enemy> Enemy => _enemy;
+
         [JsonProperty]
         private string[] InventoryNames { get; set; }
 
-        public Room(string name, string description, Dictionary<Directions, string> neighborNames, string[] inventoryNames)
+        [JsonProperty]
+        private string[] EnemyNames { get; set; }
+
+        public Room(string name, string description, Dictionary<Directions, string> neighborNames, string[] inventoryNames, string[] enemyNames)
         {
             Name = name;
             Description = description;
             NeighborNames = neighborNames ?? new Dictionary<Directions, string>();
             _neighbors = new Dictionary<Directions, Room>();
+
             InventoryNames = inventoryNames ?? new string[0];
             _inventory = new List<Item>();
+
+            EnemyNames = enemyNames ?? new string[0];
+            _enemy = new List<Enemy>();
         }
 
         public static bool operator ==(Room lhs, Room rhs)
@@ -45,18 +59,10 @@ namespace Zork.Common
         }
 
         public static bool operator !=(Room lhs, Room rhs) => !(lhs == rhs);
+
         public override bool Equals(object obj) => obj is Room other && other == this;
+
         public override int GetHashCode() => Name.GetHashCode();
-
-        public void UpdateInventory(World world)
-        {
-            foreach (var inventoryName in InventoryNames)
-            {
-                _inventory.Add(world.ItemsByName[inventoryName]);
-            }
-
-            InventoryNames = null;
-        }
 
         public void UpdateNeighbors(World world)
         {            
@@ -68,6 +74,25 @@ namespace Zork.Common
             NeighborNames = null;
         }
 
+        public void UpdateInventory(World world)
+        {
+            foreach (var inventoryName in InventoryNames)
+            {
+                _inventory.Add(world.ItemsByName[inventoryName]);
+            }
+
+            InventoryNames = null;
+        }
+
+        public void UpdateEnemies(World world)
+        {
+            foreach (var enemyName in EnemyNames)
+            {
+                _enemy.Add(world.EnemiesByName[enemyName]);
+            }
+
+            EnemyNames = null;
+        }
 
         public void AddItemToInventory(Item itemToAdd)
         {
@@ -87,8 +112,14 @@ namespace Zork.Common
             }
         }
 
+        public void RemoveEnemyFromRoom(Enemy enemyToRemove)
+        {
+            _enemy.Remove(enemyToRemove);
+        }
         public override string ToString() => Name;
+
         private readonly List<Item> _inventory;
+        private readonly List<Enemy> _enemy;
         private readonly Dictionary<Directions, Room> _neighbors;
     }
 }

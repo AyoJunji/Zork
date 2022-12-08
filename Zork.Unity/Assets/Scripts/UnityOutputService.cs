@@ -50,7 +50,6 @@ public class UnityOutputService : MonoBehaviour, IOutputService
         string[] lineTokens = message.Split(separator);
         string firstLine;
         string secondLine;
-
         if (lineTokens.Length == 1)
         {
             firstLine = lineTokens[0];
@@ -58,7 +57,6 @@ public class UnityOutputService : MonoBehaviour, IOutputService
             textLine.text = firstLine;
             _entries.Enqueue(textLine.gameObject);
         }
-        
         else
         {
             firstLine = lineTokens[0];

@@ -5,17 +5,44 @@
       {
         "Name": "Mat",
         "LookDescription": "A rubber mat saying 'Welcome to Zork!' lies here.",
-        "InventoryDescription": "A welcome mat."
+        "InventoryDescription": "A welcome mat.",
+        "IsWeapon": false
       },
       {
         "Name": "Mailbox",
         "LookDescription": "There is a small mailbox here.",
-        "InventoryDescription": "A small mailbox."
+        "InventoryDescription": "A small mailbox.",
+        "IsWeapon": false
       },
       {
         "Name": "Leaves",
         "LookDescription": "There is a pile of leaves here.",
-        "InventoryDescription": "A pile of leaves."
+        "InventoryDescription": "A pile of leaves.",
+        "IsWeapon": false
+      },
+      {
+        "Name": "Sword",
+        "LookDescription": "There is an Elvish sword of great antiquity.",
+        "InventoryDescription": "An Elvish sword.",
+        "IsWeapon": true
+      },
+      {
+        "Name": "Knife",
+        "LookDescription": "A large knife lays on the ground.",
+        "InventoryDescription": "A sharpened butcher knife.",
+        "IsWeapon": true
+      }
+    ],
+    "Enemies": [
+      {
+        "Name": "Troll",
+        "LookDescription": "A large Troll stands here.",
+        "Health": 10
+      },
+      {
+        "Name": "Grue",
+        "LookDescription": "An aggresive Grue waits here.",
+        "Health": 10
       }
     ],
     "Rooms": [
@@ -29,7 +56,11 @@
         },
         "InventoryNames": [
           "Mat",
-          "Mailbox"
+          "Mailbox",
+          "Knife"
+        ],
+        "EnemyNames": [
+          "Grue"
         ]
       },
       {
@@ -39,7 +70,13 @@
           "North": "Forest 2",
           "East": "Behind House",
           "West": "West of House"
-        }
+        },
+        "InventoryNames": [
+          "Sword"
+        ],
+        "EnemyNames": [
+          "Troll"
+        ]
       },
       {
         "Name": "South of House",

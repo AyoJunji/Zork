@@ -6,8 +6,12 @@ namespace Zork.Common
     public class Player
     {
         public EventHandler<Room> LocationChanged;
+
         public event EventHandler<int> ScoreChanged;
+
         public event EventHandler<int> MovesChanged;
+
+        public event EventHandler<int> HealthChanged;
 
         public Room CurrentRoom
         {
@@ -18,22 +22,6 @@ namespace Zork.Common
                 {
                     _currentRoom = value;
                     LocationChanged?.Invoke(this, _currentRoom);
-                }
-            }
-        }
-
-         public int Score
-        {
-            get
-            {
-                return _score;
-            }
-            set
-            {
-                if (_score != value)
-                {
-                    _score = value;
-                    ScoreChanged?.Invoke(this, _score);
                 }
             }
         }
@@ -54,12 +42,43 @@ namespace Zork.Common
             }
         }
 
+        public int Score
+        {
+            get
+            {
+                return _score;
+            }
+            set
+            {
+                if (_score != value)
+                {
+                    _score = value;
+                    ScoreChanged?.Invoke(this, _score);
+                }
+            }
+        }
 
+        public int Health
+        {
+            get
+            {
+                return _health;
+            }
+            set
+            {
+                if (_health != value)
+                {
+                    _health = value;
+                    HealthChanged?.Invoke(this, _health);
+                }
+            }
+        }
         public IEnumerable<Item> Inventory => _inventory;
 
-        public Player(World world, string startingLocation)
+        public Player(World world, string startingLocation, int health)
         {
             _world = world;
+            Health = health;
 
             if (_world.RoomsByName.TryGetValue(startingLocation, out _currentRoom) == false)
             {
@@ -98,10 +117,16 @@ namespace Zork.Common
             }
         }
 
+        public void TakeDamage(int damageAmount)
+        {
+            _health -= damageAmount;
+        }
+
         private readonly World _world;
         private Room _currentRoom;
         private readonly List<Item> _inventory;
         private int _moves;
         private int _score;
+        private int _health;
     }
 }
